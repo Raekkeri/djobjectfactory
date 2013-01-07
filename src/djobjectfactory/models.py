@@ -14,5 +14,3 @@ for app in getattr(settings, 'INSTALLED_APPS', []):
         __import__(app_tests, fromlist=app)
     except ImportError, e:
         pass
-
-
