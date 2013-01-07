@@ -1,12 +1,14 @@
-from django.conf import settings
 from django.db.models import get_model
 
 
-__all__ = ['get_factory', 'ObjectFactory']
-REGISTRY = {}
+__all__ = ['ObjectFactory']
 
 
 def get_factory(model):
+    from models import REGISTRY
+    # Now all subclasses for ObjectFactory have been introduced.
+    for cls in ObjectFactory.__subclasses__():
+        REGISTRY[cls.model] = cls
     return REGISTRY.get(model, ObjectFactory(model))
 
 
@@ -34,18 +36,3 @@ class ObjectFactory(object):
     @classmethod
     def get_model(cls):
         return get_model(*cls.model.split('.'))
-
-
-# Go through the installed apps and import their test helpers to register the
-# object factories.
-for app in getattr(settings, 'INSTALLED_APPS', []):
-    app = app + '.tests'
-    try:
-        __import__(app + '.helpers', fromlist=app)
-    except ImportError:
-        pass
-
-
-# Now all subclasses for ObjectFactory have been introduced.
-for cls in ObjectFactory.__subclasses__():
-    REGISTRY[cls.model] = cls
