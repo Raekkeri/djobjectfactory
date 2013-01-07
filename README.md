@@ -6,7 +6,7 @@ In myapp/tests.py (remember to add ``myapp`` to INSTALLED APPS)
 
 ```python
 from django.contrib.auth.models import User
-from djobjectfactory.factory import ObjectFactory
+from djobjectfactory.factory import ObjectFactory, get_factory
 
 
 class UserFactory(ObjectFactory):
