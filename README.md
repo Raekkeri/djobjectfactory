@@ -1,6 +1,6 @@
 Example: create a factory for auth.User:
 
-# myapp/tests/helpers.py (remember to add myapp to INSTALLED APPS)
+In myapp/tests/helpers.py (remember to add myapp to INSTALLED APPS)
 
 ```python
 from django.contrib.auth.models import User
