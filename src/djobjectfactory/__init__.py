@@ -1,1 +1,1 @@
-from factory import get_factory
+from factory import *

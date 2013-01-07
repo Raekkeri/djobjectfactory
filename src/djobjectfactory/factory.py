@@ -1,14 +1,14 @@
 from django.db.models import get_model
 
 
-__all__ = ['ObjectFactory']
+__all__ = ['get_factory', 'ObjectFactory']
 
 
 def get_factory(model):
     from models import REGISTRY
     # Now all subclasses for ObjectFactory have been introduced.
     for cls in ObjectFactory.__subclasses__():
-        REGISTRY[cls.model] = cls
+        REGISTRY[cls.model] = cls(cls.model)
     return REGISTRY.get(model, ObjectFactory(model))
 
 
@@ -16,23 +16,19 @@ class ObjectFactory(object):
     _counter = 0
     default_values = {}
 
-    @classmethod
-    def __init__(cls, model):
-        cls.model = model
+    def __init__(self, model):
+        self.model = model
 
-    @classmethod
-    def create(cls, *args, **kwargs):
-        cls._counter += 1
-        values = cls.default_values.copy()
+    def create(self, *args, **kwargs):
+        self._counter += 1
+        values = self.default_values.copy()
         values.update(kwargs)
-        values.update(cls.default(cls._counter))
-        model = cls.get_model()
+        values.update(self.default(self._counter))
+        model = self.get_model()
         return model.objects.create(**values)
 
-    @classmethod
-    def default(cls, counter):
+    def default(self, counter):
         return {}
 
-    @classmethod
-    def get_model(cls):
-        return get_model(*cls.model.split('.'))
+    def get_model(self):
+        return get_model(*self.model.split('.'))
