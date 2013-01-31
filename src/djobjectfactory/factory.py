@@ -18,14 +18,21 @@ class ObjectFactory(object):
 
     def __init__(self, model):
         self.model = model
+        self._model = self.get_model()
 
     def create(self, *args, **kwargs):
         self._counter += 1
         values = self.default_values.copy()
-        values.update(kwargs)
         values.update(self.default(self._counter))
-        model = self.get_model()
-        return model.objects.create(**values)
+        values.update(kwargs)
+        return self._model.objects.create(**values)
+
+    def get_or_create(self, **kwargs):
+        qs = self._model.objects.filter(**kwargs)
+        try:
+            return qs.get()
+        except self._model.DoesNotExist:
+            return self.create(**kwargs)
 
     def default(self, counter):
         return {}
