@@ -23,7 +23,7 @@ class ObjectFactory(object):
     def create(self, *args, **kwargs):
         self._counter += 1
         values = self.default_values.copy()
-        values.update(self.default(self._counter))
+        values.update(self.default(self._counter, **kwargs))
         values.update(kwargs)
         return self._model.objects.create(**values)
 
@@ -34,7 +34,7 @@ class ObjectFactory(object):
         except self._model.DoesNotExist:
             return self.create(**kwargs)
 
-    def default(self, counter):
+    def default(self, counter, **kwargs):
         return {}
 
     def get_model(self):
